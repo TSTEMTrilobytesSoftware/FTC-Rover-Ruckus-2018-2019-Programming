@@ -32,6 +32,10 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
@@ -40,6 +44,8 @@ import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 
 import java.util.List;
+
+import static com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.BRAKE;
 
 /**
  * This 2018-2019 OpMode illustrates the basics of using the TensorFlow Object Detection API to
@@ -51,13 +57,18 @@ import java.util.List;
  * IMPORTANT: In order to use this OpMode, you need to obtain your own Vuforia license key as
  * is explained below.
  */
-@TeleOp(name = "Concept: TensorFlow Object Detection", group = "Concept")
-//                                       @Disabled
+@TeleOp(name = "TensorFlowMotorTest", group = "Concept")
+//@Disabled
 public class TensorFlowTest extends LinearOpMode {
     private static Double confidence;
     private static final String TFOD_MODEL_ASSET = "RoverRuckus.tflite";
     private static final String LABEL_GOLD_MINERAL = "Gold Mineral";
     private static final String LABEL_SILVER_MINERAL = "Silver Mineral";
+    private DcMotor leftDrive = null;
+    private DcMotor rightDrive = null;
+
+    int position = -2;
+
 
     /*
      * IMPORTANT: You need to obtain your own license key to use Vuforia. The string below with which
@@ -90,6 +101,14 @@ public class TensorFlowTest extends LinearOpMode {
     public void runOpMode() {
         // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
         // first.
+        leftDrive = hardwareMap.get(DcMotor.class, "left_drive");
+        rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
+
+        leftDrive.setDirection(DcMotor.Direction.REVERSE);
+        rightDrive.setDirection(DcMotor.Direction.FORWARD);
+
+        leftDrive.setZeroPowerBehavior(BRAKE);
+        rightDrive.setZeroPowerBehavior(BRAKE);
 
         initVuforia();
 
@@ -110,7 +129,10 @@ public class TensorFlowTest extends LinearOpMode {
                 tfod.activate();
             }
 
-            while (opModeIsActive()) {
+            ElapsedTime time = new ElapsedTime();
+            time.reset();
+            time.startTime();
+            while (time.seconds()<15) {
                 if (tfod != null) {
                     // getUpdatedRecognitions() will return null if no new information is available since
                     // the last time that call was made.
@@ -135,10 +157,13 @@ public class TensorFlowTest extends LinearOpMode {
                         if (goldMineralX != -1 && silverMineral1X != -1 && silverMineral2X != -1) {
                           if (goldMineralX < silverMineral1X && goldMineralX < silverMineral2X) {
                             telemetry.addData("Gold Mineral Position", "Left");
+                            position = -1;
                           } else if (goldMineralX > silverMineral1X && goldMineralX > silverMineral2X) {
                             telemetry.addData("Gold Mineral Position", "Right");
+                            position = 1;
                           } else {
                             telemetry.addData("Gold Mineral Position", "Center");
+                            position = 0;
                           }
                           telemetry.addData("goldMineralX",goldMineralX);
 
@@ -148,6 +173,78 @@ public class TensorFlowTest extends LinearOpMode {
                     }
                 }
             }
+            time.reset();
+            if(position==-2||position==0){
+                if(position==-2) {
+                    telemetry.addData("Status", "didn't detect");
+                    telemetry.update();
+                }
+                leftDrive.setPower(-1);
+                rightDrive.setPower(-1);
+                sleep(1500);
+                leftDrive.setPower(0);
+                rightDrive.setPower(0);
+                sleep(500);
+
+                leftDrive.setPower(1);
+                rightDrive.setPower(1);
+                sleep(1500);
+                leftDrive.setPower(0);
+                rightDrive.setPower(0);
+
+
+
+            }else if(position == -1){
+                leftDrive.setPower(-1);
+                sleep(420);
+                rightDrive.setPower(0);
+
+                leftDrive.setPower(-1);
+                rightDrive.setPower(-1);
+                sleep(1400);
+                leftDrive.setPower(0);
+                rightDrive.setPower(0);
+                sleep(500);
+
+                leftDrive.setPower(1);
+                rightDrive.setPower(1);
+                sleep(1400);
+                leftDrive.setPower(0);
+                rightDrive.setPower(0);
+                sleep(500);
+
+                leftDrive.setPower(1);
+                sleep(100);
+                rightDrive.setPower(0);
+            }
+            else if (position == 1){
+                rightDrive.setPower(-1);
+                sleep(420);
+                rightDrive.setPower(0);
+
+                leftDrive.setPower(-1);
+                rightDrive.setPower(-1);
+                sleep(1500);
+                leftDrive.setPower(0);
+                rightDrive.setPower(0);
+                sleep(500);
+
+                leftDrive.setPower(1);
+                rightDrive.setPower(1);
+                sleep(1450);
+                leftDrive.setPower(0);
+                rightDrive.setPower(0);
+                sleep(500);
+
+                rightDrive.setPower(1);
+                sleep(100);
+                leftDrive.setPower(0);
+            }
+
+
+
+
+
         }
 
         if (tfod != null) {

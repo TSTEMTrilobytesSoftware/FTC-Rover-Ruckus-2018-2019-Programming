@@ -155,7 +155,6 @@ public class Working12820AutoDriveThroughMinerals extends LinearOpMode {
 
     /**
      * Sets the power of both drive motors to that specified for the duration of time specified.
-     *
      * @param time  in milliseconds
      * @param power from -1 to 1
      */

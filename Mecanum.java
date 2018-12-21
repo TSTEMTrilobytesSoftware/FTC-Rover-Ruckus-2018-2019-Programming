@@ -38,6 +38,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
@@ -56,8 +57,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
  * Press the b button on gamepad2 to activate the braking mechanism on the linear slide in case it is coasting while hooked on to the lander.
  */
 
-@TeleOp(name="Basic TeleOp Linear OpMode for 2018-2019 Season", group="Linear Opmode")
-public class Working12820TeleOp extends LinearOpMode {
+@TeleOp(name="POV-DRIVE Tele-Op", group="Linear Opmode")
+public class Mecanum extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -124,9 +125,11 @@ public class Working12820TeleOp extends LinearOpMode {
     }
 
     public void updateVars(){
-        // Tank Drive
-        leftPower  = gamepad1.left_stick_y ;
-        rightPower = gamepad1.right_stick_y ;
+        // POV Mode
+        double drive = -gamepad1.left_stick_y;
+        double turn  =  gamepad1.right_stick_x;
+        leftPower    = Range.clip(drive + turn, -1.0, 1.0) ;
+        rightPower   = Range.clip(drive - turn, -1.0, 1.0) ;
 
         //Linear Slide
         if(gamepad2.left_trigger==1&&gamepad2.right_trigger==0) {
@@ -156,9 +159,6 @@ public class Working12820TeleOp extends LinearOpMode {
 
     }
 
-    /**
-     *
-     */
     public void setBrake() {
         if(!brakeOn) {
             linearSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -168,12 +168,12 @@ public class Working12820TeleOp extends LinearOpMode {
             linearSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             downMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             brakeOn = false;
-            }
         }
-        //Ignore...these are RGB values for testing the color sensor
-        //13 7 4
-        //12 7 4
-        //14 8 4
+    }
+    //Ignore...these are RGB values for testing the color sensor
+    //13 7 4
+    //12 7 4
+    //14 8 4
     //15 9 5
     //742  distance sensor value from farther
     //75-90 65-80, 30-40 //average RGB values for yellow
@@ -214,8 +214,6 @@ public class Working12820TeleOp extends LinearOpMode {
     }
 
     public void updateT(String input)  {
-
         telemetry.addLine(input);
-        telemetry.update();
     }
 }
