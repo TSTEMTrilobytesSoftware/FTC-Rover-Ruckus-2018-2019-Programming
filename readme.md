@@ -1,14 +1,14 @@
-##TeamCode Module
+## TeamCode Module
 
 Welcome!
 
 This module, TeamCode, is the place where our team has wrote the code for our robot controller app.
 
-##Class Names
+## Class Names
 
 Note that some class names are not named in the best conventions possible, and therefore, it is highly recommended to look at the Op Mode name(right before class declaration) inside of the java file so that you can get a better understanding of what the class does. Also, reading our comments will ensure that you understand how our program runs.
 
-##ADVANCED Multi-Team App management: Cloning the TeamCode Module
+## ADVANCED Multi-Team App management: Cloning the TeamCode Module
 
 In case you import our files and need TeamCode Module help for multiple teams:
 
