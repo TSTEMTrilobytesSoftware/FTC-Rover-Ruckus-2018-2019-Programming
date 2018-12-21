@@ -82,7 +82,7 @@ public class TensorFlowTest extends LinearOpMode {
      * Once you've obtained a license key, copy the string from the Vuforia web site
      * and paste it in to your code on the next line, between the double quotes.
      */
-    private static final String VUFORIA_KEY = "AYeuFGH/////AAABmdqwAJ8Ig0PzslYt8z33d4MGbvGcowYMzAKjLykY+mRujQ4jYj5/XaRInlA0LVW6gAu/RG4TOnJMQljgRytE7Lo1aQOj6VUN+YWOacDSLvowzA3XiL0+5lKbbCJ9TZ3+q80c5TsKXMuWQWp907bas8qQt7tOZsk+YXvuQJpvsp5b9QYRy9/FAXVAxdG45NeXY/vuqUtXM/yxmXd5WdMoDRdgRt7H+0aQYjouyVvwlJSorzPnSZz7aCNpQiSdFg4As/qmBO/tt8xJ+81wCp1kC8TYhUqk9rEMcpypWs+TfUxqen3yoZwGDqw7OFF0va52enmBUh4nd3v6cz16Vd8SovUxxzG1uJO5y4y6Iw42D5dX";
+    private static final String VUFORIA_KEY = "VUFORIA KEY GOES HERE";
 
     /**
      * {@link #vuforia} is the variable we will use to store our instance of the Vuforia
