@@ -31,6 +31,7 @@ package org.firstinspires.ftc.teamcode;
 
 //import necessary classes for program to run
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -51,6 +52,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  */
 
 @TeleOp(name = "Test Program", group = "Linear Opmode")
+@Disabled
 public class test extends LinearOpMode {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -91,79 +93,97 @@ public class test extends LinearOpMode {
         runtime.reset();
 
         //list of commands, detailed in class javadoc
-        moveLS(2500,-.3);
+        moveLS(2500, -.3);
 
-        while(!gamepad1.b){}
-
-        sleep(1000);
-
-        while(!gamepad1.b){}
-
-        goStraight(80,-1);
-
-        while(!gamepad1.b){}
+        while (!gamepad1.b) {
+        }
 
         sleep(1000);
 
-        while(!gamepad1.b){}
+        while (!gamepad1.b) {
+        }
+
+        goStraight(80, -1);
+
+        while (!gamepad1.b) {
+        }
+
+        sleep(1000);
+
+        while (!gamepad1.b) {
+        }
 
         goLeft(420);
 
-        while(!gamepad1.b){}
+        while (!gamepad1.b) {
+        }
 
         sleep(1000);
 
-        while(!gamepad1.b){}
+        while (!gamepad1.b) {
+        }
 
         goStraight(1900, 1);
 
-        while(!gamepad1.b){}
+        while (!gamepad1.b) {
+        }
 
         sleep(1000);
 
-        while(!gamepad1.b){}
+        while (!gamepad1.b) {
+        }
 
         goLeft(1200);
 
-        while(!gamepad1.b){}
+        while (!gamepad1.b) {
+        }
 
         sleep(1000);
 
-        while(!gamepad1.b){}
+        while (!gamepad1.b) {
+        }
 
         setFrontServo(0.3);
 
-        while(!gamepad1.b){}
+        while (!gamepad1.b) {
+        }
 
         sleep(2000);
 
-        while(!gamepad1.b){}
+        while (!gamepad1.b) {
+        }
 
         //goLeft(450);
 
-        while(!gamepad1.b){}
+        while (!gamepad1.b) {
+        }
 
         sleep(1000);
 
-        while(!gamepad1.b){}
+        while (!gamepad1.b) {
+        }
 
-        goStraight(4000,1);
+        goStraight(4000, 1);
 
-        while(!gamepad1.b){}
-
-        sleep(1000);
-
-        while(!gamepad1.b){}
-
-        moveLS(200,.7);
-
-        while(!gamepad1.b){}
+        while (!gamepad1.b) {
+        }
 
         sleep(1000);
 
-        while(!gamepad1.b){}
+        while (!gamepad1.b) {
+        }
 
-        goStraight(1000,0);//see if rh;obot brings down linear slide
+        moveLS(200, .7);
+
+        while (!gamepad1.b) {
+        }
+
+        sleep(1000);
+
+        while (!gamepad1.b) {
+        }
+
+        goStraight(1000, 0);//see if rh;obot brings down linear slide
         stopRobot();
     }
 
@@ -196,6 +216,7 @@ public class test extends LinearOpMode {
         leftDrive.setPower(0);
         rightDrive.setPower(0);
     }
+
     public void goLeft(int time) {
         leftDrive.setPower(-1);
         leftPower = leftDrive.getPower();
@@ -219,8 +240,8 @@ public class test extends LinearOpMode {
         updateT();
     }
 
-    public void moveLS (int time, double power){
-        if(power>=-1&&power<=1)
+    public void moveLS(int time, double power) {
+        if (power >= -1 && power <= 1)
             linearSlide.setPower(power);
         else
             linearSlide.setPower(.5);
@@ -231,7 +252,7 @@ public class test extends LinearOpMode {
     }
 
     public void setArmServo(double position) {
-        if(position>=0&&position<=1)
+        if (position >= 0 && position <= 1)
             armServo.setPower(position);
         else
             armServo.setPower(0);
@@ -240,7 +261,7 @@ public class test extends LinearOpMode {
     }
 
     public void setFrontServo(double position) {
-        if(position>=0&&position<=1)
+        if (position >= 0 && position <= 1)
             frontServo.setPosition(position);
         else
             frontServo.setPosition(0);

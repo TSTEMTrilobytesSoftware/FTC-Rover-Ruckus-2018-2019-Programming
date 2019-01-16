@@ -40,7 +40,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 /**
- * @author 12820 Wagner High School FTC Robotics Programming Team: Ian Fernandes, Chloe Price, Aden Briano, Bella Gonzalez, Ruby Gomez, Daniel Coronado
+ * @author 12820 Wagner High School FTC Robotics Programming Team: Ian Fernandes, Aden Briano, Bella Gonzalez, Daniel Coronado
  * @version 1.0
  * This program corresponds to the Autonomous portion of the FTC match.
  * This program includes algorithms for 2 drive motors, 1 arm motor, and 2 servos.
@@ -96,13 +96,13 @@ public class AutoDriveThroughMineralsRight extends LinearOpMode {
         runtime.reset();
 
         // Start sequence of commands detailed in class javadoc.
-        moveLS(500,-.3);
+        moveLS(500, -.3);
 
         goRight(420);
 
         sleep(1000);
 
-        goStraight(1000,1);
+        goStraight(1000, 1);
 
         sleep(1000);
 
@@ -153,6 +153,7 @@ public class AutoDriveThroughMineralsRight extends LinearOpMode {
      * goStraight takes on two parameters, one for the duration of the operation in milliseconds, and
      * the other for the power to set the drive motors to.
      * This method makes both drive motors turn on at the speed specified for the time specified.
+     *
      * @param time
      * @param power
      */
@@ -172,6 +173,7 @@ public class AutoDriveThroughMineralsRight extends LinearOpMode {
      * milliseconds.
      * This method makes the robot turn in place by alternating the values of the left and right
      * drive motors for the time specified.
+     *
      * @param time
      */
     public void goRight(int time) {
@@ -190,6 +192,7 @@ public class AutoDriveThroughMineralsRight extends LinearOpMode {
      * milliseconds.
      * This method makes the robot turn in place by alternating the values of the left and right
      * drive motors for the time specified.
+     *
      * @param time
      */
     public void goLeft(int time) {
@@ -223,11 +226,12 @@ public class AutoDriveThroughMineralsRight extends LinearOpMode {
      * moveLS takes on two parameters, one being time(in milliseconds), and the other being power.
      * This method sets the power of the linear slide motor to the power specified for the duration
      * specified.
+     *
      * @param time
      * @param power
      */
-    public void moveLS (int time, double power){
-        if(power>=-1&&power<=1)
+    public void moveLS(int time, double power) {
+        if (power >= -1 && power <= 1)
             linearSlide.setPower(power);
         else
             linearSlide.setPower(.5);
@@ -240,10 +244,11 @@ public class AutoDriveThroughMineralsRight extends LinearOpMode {
     /**
      * setArmServo takes on one parameter, that being position.
      * This method sets the power of the continuous arm servo to the position specified.
+     *
      * @param power
      */
     public void setArmMotor(double power) {
-        if(power>=-1&&power<=1)
+        if (power >= -1 && power <= 1)
             armServo.setPower(power);
         else
             armServo.setPower(0);
@@ -254,10 +259,11 @@ public class AutoDriveThroughMineralsRight extends LinearOpMode {
     /**
      * setFrontServo takes on one parameter, that being position.
      * This method sets the power of the front servo to the position specified.
+     *
      * @param position
      */
     public void setFrontServo(double position) {
-        if(position>=0&&position<=1)
+        if (position >= 0 && position <= 1)
             frontServo.setPosition(position);
         else
             frontServo.setPosition(0);

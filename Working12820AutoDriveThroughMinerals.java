@@ -32,6 +32,7 @@ package org.firstinspires.ftc.teamcode;
 //import necessary classes for program to run
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior;
@@ -40,7 +41,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 /**
- * @author 12820 Wagner High School FTC Robotics Programming Team: Ian Fernandes, Chloe Price, Aden Briano, Bella Gonzalez, Ruby Gomez, Daniel Coronado
+ * @author 12820 Wagner High School FTC Robotics Programming Team: Ian Fernandes, Aden Briano, Bella Gonzalez, Daniel Coronado
  * @version 1.0
  * This program corresponds to the Autonomous portion of the FTC match.
  * This program includes algorithms for 2 drive motors, 1 arm motor, 2 servos, and a color sensor.
@@ -49,7 +50,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Robot drops off team marker and drives to crater.
  */
 
+
 @Autonomous(name = "No Color Sense Go Through Minerals LEFT", group = "Linear Opmode")
+//@Disabled
 public class Working12820AutoDriveThroughMinerals extends LinearOpMode {
 
     // Declare OpMode members.
@@ -155,6 +158,7 @@ public class Working12820AutoDriveThroughMinerals extends LinearOpMode {
 
     /**
      * Sets the power of both drive motors to that specified for the duration of time specified.
+     *
      * @param time  in milliseconds
      * @param power from -1 to 1
      */
@@ -235,6 +239,7 @@ public class Working12820AutoDriveThroughMinerals extends LinearOpMode {
         sleep(time);
         linearSlide.setPower(0);
     }
+
     /**
      * Sets the power of the down linear slide to that specified for the duration of time, which is also
      * specified.
@@ -252,6 +257,7 @@ public class Working12820AutoDriveThroughMinerals extends LinearOpMode {
         sleep(time);
         downMotor.setPower(0);
     }
+
     /**
      * Sets the position of the arm servo to that speicifed.
      *

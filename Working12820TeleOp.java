@@ -42,8 +42,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 /**
- * @author 12820 Wagner High School FTC Robotics Programming Team: Ian Fernandes, Chloe Price, Aden Briano, Bella Gonzalez, Ruby Gomez, Daniel Coronado
- * @version 1.0
+ * @author 12820 Wagner High School FTC Robotics Programming Team: Ian Fernandes, Aden Briano, Bella Gonzalez, Daniel Coronado
+ * @version 3.0
  * This program corresponds to the TeleOp portion of the FTC match.
  * This program includes algorithms for 2 drive motors, 1 arm motor, 1 servo, 1 distance sensor, and 1 color sensor.
  * Description of TeleOp Controls:
@@ -51,34 +51,37 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
  * The left and right joysticks are used to maneuver the robot about the gamefield. (left controls left motion while right controls right motion)
  * Use Joystick Controller 2(Recommended: Logitech F310) joysticks to control any "arm" motion.
  * To make the linear slide go up, press down on the right trigger of gamepad2. To make the linear slide go down, press down on the left trigger of gamepad2.
- * To make the arm servo go forward, move the left joystick up on gamepad2. To make the arm servo go backward, move the left joystick down on gamepad2.
+ * To make the intake go forward, move the left joystick up on gamepad2. To make the intake go backward, move the left joystick down on gamepad2.
  * To operate the front servo, press the y button on gamepad2 to move it down. As soon as it is released, it will go back to its default position.
- * Press the b button on gamepad2 to activate the braking mechanism on the linear slide in case it is coasting while hooked on to the lander.
+ * Press the b button on gamepad2 to toggle the braking mechanism on the linear slide in case it is coasting while hooked on to the lander.
  */
 
-@TeleOp(name="Basic TeleOp Linear OpMode for 2018-2019 Season", group="Linear Opmode")
+@TeleOp(name = "Basic TeleOp Linear OpMode for 2018-2019 Season", group = "Linear Opmode")
 public class Working12820TeleOp extends LinearOpMode {
 
-    // Declare OpMode members.
+    // Declare Timer and Hardware Variables
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor leftDrive = null;
     private DcMotor rightDrive = null;
     private DcMotor linearSlide = null;
-    private DcMotor downMotor = null;
-    //private CRServo armServo = null;
-    private DcMotor armServo = null;
+    private DcMotor intake = null;
     private Servo frontServo = null;
     private ColorSensor cSensor = null;
     private DistanceSensor dSensor = null;
 
-    // Sets up a variable for each motor, servo, and sensor to save power levels and other data for telemetry
+    // Sets up a variables to control power and position of motors and servos
     double leftPower = 0;
     double rightPower = 0;
     double linearPower = 0;
-    double downPower = 0;
-    double armServoPower = 0;
+    double intakePower = 0;
     double frontServoPosition = 0;
+
+    //boolean for toggling brake
     boolean brakeOn = false;
+
+    //set up variables for important positions of servo
+    private static final double SERVO_DOWN = 0;
+    private static final double SERVO_UP = 1;
 
     @Override
     public void runOpMode() {
@@ -86,27 +89,20 @@ public class Working12820TeleOp extends LinearOpMode {
         telemetry.update();
 
         // Initialize the hardware variables.
-        // "deviceName"s must correspond to the names assigned in the robot configuration file on the robot controller phone.
-        leftDrive  = hardwareMap.get(DcMotor.class, "left_drive");              //set up left motor location on robot
+        // "deviceNames must correspond to the names assigned in the robot configuration file on the robot controller phone.
+        leftDrive = hardwareMap.get(DcMotor.class, "left_drive");              //set up left motor location on robot
         rightDrive = hardwareMap.get(DcMotor.class, "right_drive");             //set up right motor location on robot
-        linearSlide = hardwareMap.get(DcMotor.class, "linear_slide");      //set up linear slide motor location on robot
-        downMotor = hardwareMap.get(DcMotor.class, "down_motor");
-
+        linearSlide = hardwareMap.get(DcMotor.class, "linear_slide");           //set up linear slide motor location on robot
+        intake = hardwareMap.get(DcMotor.class, "arm_servo");                   //set up intake location on robot
         frontServo = hardwareMap.get(Servo.class, "front_servo");               //set up front servo location on robot
         cSensor = hardwareMap.get(ColorSensor.class, "color_sensor");           //set up color sensor location on robot
         dSensor = hardwareMap.get(DistanceSensor.class, "distance_sensor");     //set up distance sensor location on robot
-        armServo = hardwareMap.get(DcMotor.class,"arm_servo" );                 //set up arm motor location on robot
 
-        // It is typical for most robots to need one of the motors reversed in order to allow for proper operation.
+        //Assign directions so that motors spin in the right direction
         leftDrive.setDirection(DcMotor.Direction.FORWARD);
         rightDrive.setDirection(DcMotor.Direction.REVERSE);
-        //leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        //rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         linearSlide.setDirection(DcMotor.Direction.FORWARD);
-        downMotor.setDirection(DcMotor.Direction.REVERSE);
-        armServo.setDirection(DcMotor.Direction.FORWARD);
-
-        cSensor.enableLed(true);
+        intake.setDirection(DcMotor.Direction.FORWARD);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -114,107 +110,93 @@ public class Working12820TeleOp extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-
             updateVars();
             updateSystem();
             updateT();
-            //idle();
-
+            //idle(); // no difference has been noted by the TSTEM TRILOBYTES Software Team regarding idle()
         }
     }
 
-    public void updateVars(){
-        // Tank Drive
-        leftPower  = gamepad1.left_stick_y ;
-        rightPower = gamepad1.right_stick_y ;
+    /**
+     * Update power and position variables for motors and servos
+     */
+    public void updateVars() {
+        // Update Tank Drive variables
+        leftPower = gamepad1.left_stick_y;
+        rightPower = gamepad1.right_stick_y;
 
-        //Linear Slide
-        if(gamepad2.left_trigger==1&&gamepad2.right_trigger==0) {
-            //downPower = -.5;
+        //Update linear slide power variable
+        if (gamepad2.left_trigger == 1 && gamepad2.right_trigger == 0) {
             linearPower = 1;
-        }
-        else if(gamepad2.left_trigger==0&&gamepad2.right_trigger==1){
+        } else if (gamepad2.left_trigger == 0 && gamepad2.right_trigger == 1) {
             linearPower = -1;
-            //downPower = -.5;
-        }
-        else{
+        } else {
             linearPower = 0;
-            downPower = 0;
         }
 
-        //Servos
-        armServoPower =  -gamepad2.left_stick_y ;
+        //Intake power
+        intakePower = -gamepad2.left_stick_y;
 
-        if(gamepad2.y)
-            frontServoPosition = 0;
+        //Front servo position
+        if (gamepad2.y)
+            frontServoPosition = SERVO_DOWN;
         else
-            frontServoPosition = 1;
-
-
-
-
+            frontServoPosition = SERVO_UP;
 
     }
 
     /**
-     *
+     * This method toggles between BRAKE mode and FLOAT mode on the linear slide motor for convenience
+     * during teleOp
      */
     public void setBrake() {
-        if(!brakeOn) {
+        if (!brakeOn) {
             linearSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            downMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             brakeOn = true;
-        }else{
+        } else {
             linearSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-            downMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             brakeOn = false;
-            }
         }
-        //Ignore...these are RGB values for testing the color sensor
-        //13 7 4
-        //12 7 4
-        //14 8 4
-    //15 9 5
-    //742  distance sensor value from farther
-    //75-90 65-80, 30-40 //average RGB values for yellow
+    }
 
+    /**
+     * This method sets the hardware components to the updated variables.
+     */
     public void updateSystem() {
         // Send calculated power to respective robot systems
         leftDrive.setPower(leftPower);
         rightDrive.setPower(rightPower);
         linearSlide.setPower(linearPower);
-        downMotor.setPower(downPower);
-       /* if(-gamepad2.left_stick_y==1) {
-            armServo.setDirection(CRServo.Direction.REVERSE);
-            armServo.setPower(1);
-        }
-        else if(-gamepad2.left_stick_y==-1) {
+        intake.setPower(intakePower);
 
-
-            armServo.setDirection(CRServo.Direction.FORWARD);
-            armServo.setPower(1);
-        }
-        else
-            armServo.setPower(0);*/
         frontServo.setPosition(frontServoPosition);
-        if(gamepad2.b)
+        if (gamepad2.b)
             setBrake();
-
-        armServo.setPower (armServoPower);
     }
+
+    /**
+     * This method provides sensory information and time for convenience during gameplay and for debugging purposes
+     * See overloaded method below
+     */
     public void updateT() {
-        // Show the elapsed game time, wheel power, linear slide power, shovel motor power, servo position, and sensory data.
+        // Show the elapsed game time, wheel power, linear slide power, arm motor power, servo position, and sensory data.
         telemetry.addData("Status", "Run Time: " + runtime.toString());
-        telemetry.addData("Drive Motors", "left: (%.2f), right: (%.2f)", leftPower, rightPower);
-        telemetry.addData("Arm Motors", "linear slide: (%.2f)", linearPower );
-        telemetry.addData("Servos", "arm servo: (%.2f), front servo: (%.2f)", armServoPower, frontServoPosition);
-        telemetry.addData("Sensors", "distance sensor: (%.2f)" , dSensor.getDistance(DistanceUnit.METER));
-        telemetry.addData("Sensors", "color sensor: red:(%d) green:(%d) blue:(%d) alpha:(%d) argb:(%d) ", cSensor.red(),cSensor.green(),cSensor.blue(),cSensor.alpha(),cSensor.argb());
+        telemetry.addData("Drive Motors", "left expected: (%.2f), left power: (%.2f), right expected: (%.2f), right power: (%.2f)", leftPower, leftDrive.getPower(), rightPower, rightDrive.getPower());
+        telemetry.addData("Arm Motors", "linear slide expected: (%.2f), linear slide power: (%.2f), intake expected: (%.2f), intake power: (%.2f)", linearPower, linearSlide.getPower(), intakePower, intake.getPower());
+        telemetry.addData("Servos", "front servo expected position: (%.2f), front servo actual position: (%.2f)", frontServoPosition, frontServo.getPosition());
+        telemetry.addData("Sensors", "distance sensor: (%.2f)", dSensor.getDistance(DistanceUnit.METER));
+        telemetry.addData("Sensors", "color sensor: red:(%d) green:(%d) blue:(%d) alpha:(%d) argb:(%d) ", cSensor.red(), cSensor.green(), cSensor.blue(), cSensor.alpha(), cSensor.argb());
         telemetry.update();
     }
 
-    public void updateT(String input)  {
-
+    /**
+     * Overloaded method for above updateT().
+     * This method takes a String named input and adds it to the telemetry.
+     * It then updates the telemetry on the driver station.
+     *
+     * @param input
+     */
+    public void updateT(String input) {
         telemetry.addLine(input);
         telemetry.update();
     }
