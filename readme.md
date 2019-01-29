@@ -3,7 +3,10 @@
 Welcome!
 
 This module, TeamCode, is the place where our team has wrote the code for our
-robot controller app. 
+robot controller app for the FTC Rover Ruckus season.
+
+Senior Software Developer: Ian Fernandes
+Software Team: Ian Fernandes, Bella Gonzalez, and Daniel Coronado
 
 ## Class Names
 
